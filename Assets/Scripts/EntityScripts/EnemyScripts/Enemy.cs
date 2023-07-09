@@ -1,3 +1,5 @@
+using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : Entity
@@ -23,10 +25,17 @@ public class Enemy : Entity
     // Update is called once per frame
     void Update()
     {
-        if (_navMeshAgent.remainingDistance <= 17f)
+       
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Nexus nexus = collision.gameObject.GetComponent<Nexus>();
+
+        if (nexus)
         {
-            _nexus.TakeDamage(20);
-            TakeDamage(_maxHp);
+            nexus.TakeDamage(20);
+            this.TakeDamage(_maxHp);
         }
     }
 }

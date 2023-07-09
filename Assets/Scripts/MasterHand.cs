@@ -18,6 +18,8 @@ public class MasterHand : MonoBehaviour
     private Vector3? _targetPos;
 
     private float _t;
+
+    public GameObject CubeMesh;
     
     private WaveUI_Manager _waveUIManager;
 
@@ -36,7 +38,7 @@ public class MasterHand : MonoBehaviour
         _waveUIManager = FindObjectOfType<WaveUI_Manager>();
         _waveUIManager.OnWaveTransFinished += AddTower;
 
-        GetComponent<MeshRenderer>().enabled = false;
+        CubeMesh.SetActive(false);
     }
 
     private void AddTower()

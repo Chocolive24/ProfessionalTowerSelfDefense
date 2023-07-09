@@ -20,12 +20,13 @@ public class AudioManager : MonoBehaviour
         _nexus = FindObjectOfType<Nexus>();
         _nexus.OnDeath += PlayGameOverSound;
         
-        PlayMusic(_mainTheme);
+        PlayMusic(_mainTheme, true);
     }
     
-    void PlayMusic(AudioClip musicClip)
+    void PlayMusic(AudioClip musicClip, bool loop)
     {
         _musicSource.clip = musicClip;
+        _musicSource.loop = loop;
         _musicSource.Play();
     }
     
@@ -37,6 +38,6 @@ public class AudioManager : MonoBehaviour
     
     private void PlayGameOverSound(Entity obj)
     {
-        PlayMusic(_gameOverTheme);
+        PlayMusic(_gameOverTheme, false);
     }
 }

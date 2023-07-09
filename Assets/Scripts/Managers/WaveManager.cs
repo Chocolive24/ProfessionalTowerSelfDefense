@@ -7,7 +7,9 @@ using Random = UnityEngine.Random;
 
 public class WaveManager : MonoBehaviour
 {
-    [SerializeField] private Enemy _baseEnemy;
+    [SerializeField] private Enemy _diablotin;
+    [SerializeField] private Enemy _demon;
+    [SerializeField] private Enemy _skorn;
 
     [SerializeField] private float _spawnTime;
     private float _timePassed;
@@ -55,7 +57,7 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartGameCO()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         
         StartNewWave();
     }
@@ -72,13 +74,36 @@ public class WaveManager : MonoBehaviour
 
         if (_timePassed >= _spawnTime && _nbrOfEnemySpawned < _totalNbrEnemyThisWave)
         {
-            for (int i = 0; i < _nbrofEnemyPerSpawn; i++)
+            int nbrToSpawn = _totalNbrEnemyThisWave - _nbrOfEnemySpawned >= _nbrofEnemyPerSpawn
+                ? _nbrofEnemyPerSpawn
+                : _totalNbrEnemyThisWave - _nbrOfEnemySpawned;
+            
+            Debug.Log("spawn" + nbrToSpawn);
+            
+            for (int i = 0; i < nbrToSpawn; i++)
             {
                 float rndXPos = Random.Range(_leftPosX.position.x, _rightPosX.position.x);
                 float rndZPos = Random.Range(_leftPosX.position.z, _maxPosZ.position.z);
-            
-                Enemy enemy = Instantiate(_baseEnemy, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
 
+                int rndEnemy = Random.Range(1, 4);
+
+                Enemy enemy;
+                
+                switch (rndEnemy)
+                {
+                    case 1:
+                       enemy = Instantiate(_diablotin, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
+                        break;
+                    case 2:
+                        enemy = Instantiate(_demon, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
+                        break;
+                    case 3:
+                        enemy = Instantiate(_skorn, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
+                        break;
+                    default:
+                        return;
+                }
+                
                 enemy.OnDeath += IncrementEnemiesDead;
                 
                 _timePassed = 0f;
@@ -95,8 +120,9 @@ public class WaveManager : MonoBehaviour
             _waveNbr++;
             _nbrOfEnemySpawned = 0;
             _nbrOfEnemyDead = 0;
+            _enemies.Clear();
             
-            _masterHand.GetComponent<MeshRenderer>().enabled = true;
+            _masterHand.CubeMesh.SetActive(true);
             
             StartCoroutine(_waveUIManager.WaveFinishedTransitionCO());
         }
@@ -104,9 +130,7 @@ public class WaveManager : MonoBehaviour
     
     private void StartNewWave()
     {
-        Debug.Log("START WAVE");
-        
-        _masterHand.GetComponent<MeshRenderer>().enabled = false;
+        _masterHand.CubeMesh.SetActive(false);
         StartCoroutine(_waveUIManager.NewWaveTransitionCO(_waveNbr));
 
         if (_waveNbr <= 1)
@@ -114,8 +138,8 @@ public class WaveManager : MonoBehaviour
             return;
         }
         
-        //_nbrofEnemyPerSpawn++;
-        _totalNbrEnemyThisWave += 0;
+        _nbrofEnemyPerSpawn++;
+        _totalNbrEnemyThisWave += 2;
     }
 
     private void IncrementEnemiesDead(Entity entity)

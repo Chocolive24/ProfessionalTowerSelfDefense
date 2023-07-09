@@ -46,6 +46,11 @@ public class Entity : MonoBehaviour
     public void TakeDamage(int damage)
     {
         Debug.Log("damage");
+
+        if (gameObject.GetComponents<Nexus>() != null)
+        {
+            Debug.Log("NEXUS" + _currentHp + this.gameObject);
+        }
         
         _currentHp -= damage;
         OnHealthChange?.Invoke(_maxHp, _currentHp);
