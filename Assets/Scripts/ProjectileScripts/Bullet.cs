@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Bullet : Projectile
@@ -7,6 +8,9 @@ public class Bullet : Projectile
     protected Rigidbody _rigidbody;
 
     protected Vector3 _targetDirection;
+
+    private float t;
+    private float livingTime = 10f;
 
     public Vector3 TargetDirection
     {
@@ -18,6 +22,17 @@ public class Bullet : Projectile
     {
         base.Awake();
         _rigidbody = GetComponent<Rigidbody>();
+    }
+
+
+    protected void Update()
+    {
+        t += Time.deltaTime;
+
+        if (t >= livingTime)
+        {
+            Destroy(gameObject);
+        }
     }
 
     protected virtual void FixedUpdate()

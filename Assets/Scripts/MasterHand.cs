@@ -63,7 +63,8 @@ public class MasterHand : MonoBehaviour
             }
             
             int rndIdx = Random.Range(0, _towerTransforms.Count);
-            _targetPos = _towerTransforms[rndIdx].position;
+            Vector3 rndPos = _towerTransforms[rndIdx].position;
+            _targetPos = new Vector3(rndPos.y, transform.position.y, rndPos.z);
             _towerTransforms.Remove(_towerTransforms[rndIdx]);
 
             StartCoroutine(InterpolateMoveCo(_initialPos, _targetPos.Value));

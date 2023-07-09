@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
@@ -9,6 +11,10 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float _invicibilityTime;
     protected float _invicibilityTimePassed = 0f;
 
+    public List<GameObject> _gameObjectMeshes;
+
+    public bool IsDead = false;
+    
     public event Action<int, int> OnHealthChange;
 
     public event Action<Entity> OnDeath;
@@ -17,10 +23,19 @@ public class Entity : MonoBehaviour
     public float InvicibilityTimePassed => _invicibilityTimePassed;
 
     protected bool _hasTakeDamage = false;
+    
+    private ParticleSystem _particleSystemDeath;
 
     protected void Awake()
     {
         _currentHp = _maxHp;
+        
+        _particleSystemDeath = GetComponent<ParticleSystem>();
+        
+        if (_particleSystemDeath)
+        {
+            _particleSystemDeath.Pause();
+        }
     }
 
     // Start is called before the first frame update
@@ -43,13 +58,11 @@ public class Entity : MonoBehaviour
         // }
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
-        Debug.Log("damage");
-
-        if (gameObject.GetComponents<Nexus>() != null)
+        if (IsDead)
         {
-            Debug.Log("NEXUS" + _currentHp + this.gameObject);
+            return;
         }
         
         _currentHp -= damage;
@@ -59,11 +72,31 @@ public class Entity : MonoBehaviour
         
         if (_currentHp <= 0)
         {
-            OnDeath?.Invoke(this);
+            IsDead = true;
             
-            Destroy(gameObject);
+            OnDeath?.Invoke(this);
+
+            if (_particleSystemDeath)
+            {
+                _particleSystemDeath.Play();
+            }
+
+            StartCoroutine(nameof(DestroyCO));
+        }
+    }
+
+    private IEnumerator DestroyCO()
+    {
+        if (_particleSystemDeath)
+        {
+            foreach (var mesh in _gameObjectMeshes)
+            {
+                mesh.SetActive(false);
+            }
+
+            yield return new WaitForSeconds(1f);
         }
         
-        
+        Destroy(gameObject);
     }
 }

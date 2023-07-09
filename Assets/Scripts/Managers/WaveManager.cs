@@ -77,9 +77,7 @@ public class WaveManager : MonoBehaviour
             int nbrToSpawn = _totalNbrEnemyThisWave - _nbrOfEnemySpawned >= _nbrofEnemyPerSpawn
                 ? _nbrofEnemyPerSpawn
                 : _totalNbrEnemyThisWave - _nbrOfEnemySpawned;
-            
-            Debug.Log("spawn" + nbrToSpawn);
-            
+
             for (int i = 0; i < nbrToSpawn; i++)
             {
                 float rndXPos = Random.Range(_leftPosX.position.x, _rightPosX.position.x);
@@ -92,13 +90,13 @@ public class WaveManager : MonoBehaviour
                 switch (rndEnemy)
                 {
                     case 1:
-                       enemy = Instantiate(_diablotin, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
+                       enemy = Instantiate(_diablotin, new Vector3(rndXPos, _leftPosX.position.y , rndZPos), Quaternion.identity);
                         break;
                     case 2:
-                        enemy = Instantiate(_demon, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
+                        enemy = Instantiate(_demon, new Vector3(rndXPos, _leftPosX.position.y, rndZPos), Quaternion.identity);
                         break;
                     case 3:
-                        enemy = Instantiate(_skorn, new Vector3(rndXPos, 0, rndZPos), Quaternion.identity);
+                        enemy = Instantiate(_skorn, new Vector3(rndXPos, _leftPosX.position.y, rndZPos), Quaternion.identity);
                         break;
                     default:
                         return;
